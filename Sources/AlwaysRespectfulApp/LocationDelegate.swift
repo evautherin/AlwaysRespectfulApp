@@ -1,6 +1,6 @@
 //
 //  LocationDelegate.swift
-//  AlwaysRespectfully
+//  AlwaysRespectfulApp
 //
 //  Created by Etienne Vautherin on 03/02/2020.
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import CoreLocation
+import AlwaysRespectfully
 import AnyLogger
 
 
@@ -35,6 +36,39 @@ public class LocationDelegate: NSObject {
         
         log.debug("> LocationDelegate startDelegation")
         manager.delegate = self
+    }
+}
+
+
+extension LocationDelegate: RegionStore {
+    public typealias L = CLLocationCoordinate2D
+    public typealias NativeRegion = CLRegion
+
+    public var storedRegions: Set<CLRegion> { Set(manager.monitoredRegions) }
+    
+    public func add<Predicate>(regions: [Region<Predicate.L>], _: Predicate.Type) -> AnyPublisher<Void, Error>
+        where Predicate : PositionPredicate {
+            
+        func add(region: Region<Predicate.L>) -> AnyPublisher<Void, Error> {
+            let nativeRegion = region.native
+            return startMonitoring(for: nativeRegion)
+        }
+    
+        let publishers = regions.map(add)
+        return Publishers.zipMany(publishers)
+    }
+    
+    public func remove(regions: [CLRegion]) {
+        func stopMonitoring(for region: CLRegion) { manager.stopMonitoring(for: region) }
+        regions.forEach(stopMonitoring)
+    }
+    
+    public var insideRegionPublisher: AnyPublisher<CLRegion, Never> {
+        Publishers.Merge(didEnterRegionSubject, insideRegionSubject).eraseToAnyPublisher()
+    }
+    
+    public var outsideRegionPublisher: AnyPublisher<CLRegion, Never> {
+        Publishers.Merge(didExitRegionSubject, outsideRegionSubject).eraseToAnyPublisher()
     }
 }
 
@@ -99,11 +133,6 @@ extension LocationDelegate {
     public func requestAlwaysAuthorization() {
         manager.requestAlwaysAuthorization()
     }
-
-    
-    var monitoredRegions: Set<CLRegion> {
-        manager.monitoredRegions
-    }
     
     
     func startMonitoring(for region: CLRegion) -> AnyPublisher<Void, Error> {
@@ -139,7 +168,4 @@ extension LocationDelegate {
     }
     
     
-    func stopMonitoring(for region: CLRegion) {
-        manager.stopMonitoring(for: region)
-    }
 }

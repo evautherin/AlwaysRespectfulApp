@@ -1,6 +1,6 @@
 //
 //  NotificationDelegate.swift
-//  AlwaysRespectfully
+//  AlwaysRespectfulApp
 //
 //  Created by Etienne Vautherin on 18/02/2020.
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
@@ -50,8 +50,7 @@ extension NotificationDelegate: PositionPredicateStore {
             
         func add(predicate: Predicate) -> Future<Void, Error>? {
             guard let request = predicate.notificationRequest else { return .none }
-    
-            return NotificationDelegate.add(request: request) //.eraseToAnyPublisher()
+            return NotificationDelegate.add(request: request)
         }
     
         let publishers = predicates.compactMap(add)

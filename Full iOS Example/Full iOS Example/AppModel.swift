@@ -72,7 +72,7 @@ class AppModel: ObservableObject {
             .map(GreatService.predicates)
             .reduce([], +)
         
-        AlwaysRespectfully(regions: LocationDelegate.shared, notifications: NotificationDelegate.shared)
+        AlwaysRespectfulApp
             .monitor(predicates: Set(predicates))
             .sink(receiveCompletion: { (completion) in
                 switch (completion) {

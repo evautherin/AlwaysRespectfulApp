@@ -10,6 +10,8 @@
 		8F063A4F241153910037752C /* AnyLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A4E241153910037752C /* AnyLogger */; };
 		8F063A52241153A20037752C /* AlwaysRespectfully in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A51241153A20037752C /* AlwaysRespectfully */; };
 		8F063A55241154CA0037752C /* AlwaysRespectfulApp in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A54241154CA0037752C /* AlwaysRespectfulApp */; };
+		8F063A58241155420037752C /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A57241155420037752C /* ObjcExceptionBridging */; };
+		8F063A5A241155420037752C /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A59241155420037752C /* XCGLogger */; };
 		8FE4867824114D76003F496B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867724114D76003F496B /* AppDelegate.swift */; };
 		8FE4867A24114D76003F496B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867924114D76003F496B /* SceneDelegate.swift */; };
 		8FE4867C24114D76003F496B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867B24114D76003F496B /* ContentView.swift */; };
@@ -48,9 +50,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F063A58241155420037752C /* ObjcExceptionBridging in Frameworks */,
 				8F063A4F241153910037752C /* AnyLogger in Frameworks */,
 				8F063A55241154CA0037752C /* AlwaysRespectfulApp in Frameworks */,
 				8F063A52241153A20037752C /* AlwaysRespectfully in Frameworks */,
+				8F063A5A241155420037752C /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +126,8 @@
 				8F063A4E241153910037752C /* AnyLogger */,
 				8F063A51241153A20037752C /* AlwaysRespectfully */,
 				8F063A54241154CA0037752C /* AlwaysRespectfulApp */,
+				8F063A57241155420037752C /* ObjcExceptionBridging */,
+				8F063A59241155420037752C /* XCGLogger */,
 			);
 			productName = "Full iOS Example";
 			productReference = 8FE4867424114D76003F496B /* Full iOS Example.app */;
@@ -155,6 +161,7 @@
 				8F063A4D241153910037752C /* XCRemoteSwiftPackageReference "AnyLogger" */,
 				8F063A50241153A20037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfully" */,
 				8F063A53241154CA0037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfulApp" */,
+				8F063A56241155420037752C /* XCRemoteSwiftPackageReference "XCGLogger" */,
 			);
 			productRefGroup = 8FE4867524114D76003F496B /* Products */;
 			projectDirPath = "";
@@ -412,6 +419,14 @@
 				kind = branch;
 			};
 		};
+		8F063A56241155420037752C /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -429,6 +444,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F063A53241154CA0037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfulApp" */;
 			productName = AlwaysRespectfulApp;
+		};
+		8F063A57241155420037752C /* ObjcExceptionBridging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F063A56241155420037752C /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = ObjcExceptionBridging;
+		};
+		8F063A59241155420037752C /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F063A56241155420037752C /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

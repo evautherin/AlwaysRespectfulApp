@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  Metro13
+
+  Created by Etienne Vautherin on 18/02/2020.
+  Copyright © 2020 Etienne Vautherin. All rights reserved.
+*/
+
+"startServiceTitle" = "You are near %@ station";
+"startServiceBody" = "Start useful service";
+"stopServiceTitle" = "You are far from %@ station";
+"stopServiceBody" = "Stop useful service";

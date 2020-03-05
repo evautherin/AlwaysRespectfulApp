@@ -9,7 +9,7 @@
 import Combine
 import CoreLocation
 import UserNotifications
-import AlwaysRespectfully
+import AlwaysRespectfulApp
 import AnyLogger
 
 
@@ -105,18 +105,6 @@ extension NotificationDelegate: UNUserNotificationCenterDelegate {
 }
 
 
-//extension NotificationDelegate {
-//    static func removePendingRequests(withIdentifiers identifiers: [String]) {
-//        center.removePendingNotificationRequests(withIdentifiers: identifiers)
-//    }
-//
-//
-//    static func removeDeliveredNotifications(withIdentifiers identifiers: [String]) {
-//        center.removeDeliveredNotifications(withIdentifiers: identifiers)
-//    }
-//}
-
-
 extension NotificationDelegate {
     public static func requestAuthorization(options: UNAuthorizationOptions) -> Future<Bool, Error> {
         Future({ (promise) in
@@ -142,30 +130,4 @@ extension NotificationDelegate {
             })
         })
     }
-    
-    
-//    static var pendingNotificationRequests: Future<[UNNotificationRequest], Never> {
-//        Future({ (promise) in
-//            center.getPendingNotificationRequests { (requests) in
-//                promise(.success(requests))
-//            }
-//        })
-//    }
 }
-
-
-//extension NotificationDelegate {
-//    func addMaskedIdentiers(_ identifiers: Set<String>) {
-//        log.debug("> add mask for identifiers: \(identifiers.debugDescription)")
-//        maskedIdentifiers.formUnion(identifiers)
-//        NotificationDelegate.removeDeliveredNotifications(withIdentifiers: Array(identifiers))
-//    }
-//
-//
-//    func removeMaskedIdentiers(_ identifiers: Set<String>) {
-//        log.debug("> remove mask for identifiers: \(identifiers.debugDescription)")
-//        maskedIdentifiers.subtract(identifiers)
-//    }
-//}
-
-

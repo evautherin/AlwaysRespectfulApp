@@ -2,11 +2,13 @@
 //  AppDelegate.swift
 //  Full iOS Example
 //
-//  Created by Etienne Vautherin on 05/03/2020.
+//  Created by Etienne Vautherin on 27/02/2020.
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
 //
 
 import UIKit
+import AnyLogger
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        AppLogger.startLogging()
+        
+        log.debug("launchOptions: \(launchOptions.debugDescription)")
+        let locationLaunch = (launchOptions?[UIApplication.LaunchOptionsKey.location] as? NSNumber)?.boolValue ?? false
+        AppModel.shared.sideEffects(locationLaunch)
         return true
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        log.debug("applicationWillTerminate")
+        AppLogger.flushLog()
     }
 
     // MARK: UISceneSession Lifecycle

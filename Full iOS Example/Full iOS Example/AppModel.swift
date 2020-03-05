@@ -7,10 +7,10 @@
 //
 
 import os
-import Foundation
 import Combine
 import SwiftUI
-import AlwaysRespectful
+import AlwaysRespectfully
+import AlwaysRespectfulApp
 
 
 class AppModel: ObservableObject {

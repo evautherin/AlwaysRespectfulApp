@@ -6,12 +6,8 @@
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
 //
 
-import os
-import Foundation
-import Combine
-import CoreLocation
 import UserNotifications
-import AlwaysRespectful
+import AlwaysRespectfulApp
 import AnyLogger
 
 

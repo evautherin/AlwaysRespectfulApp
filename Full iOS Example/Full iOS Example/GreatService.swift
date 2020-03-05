@@ -6,10 +6,10 @@
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
 //
 
-import Foundation
 import Combine
 import SwiftUI
-import AlwaysRespectful
+import AlwaysRespectfully
+import AlwaysRespectfulApp
 import AnyLogger
 
 

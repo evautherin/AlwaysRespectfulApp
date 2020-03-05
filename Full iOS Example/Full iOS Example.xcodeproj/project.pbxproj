@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F063A4F241153910037752C /* AnyLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A4E241153910037752C /* AnyLogger */; };
+		8F063A52241153A20037752C /* AlwaysRespectfully in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A51241153A20037752C /* AlwaysRespectfully */; };
+		8F063A55241154CA0037752C /* AlwaysRespectfulApp in Frameworks */ = {isa = PBXBuildFile; productRef = 8F063A54241154CA0037752C /* AlwaysRespectfulApp */; };
 		8FE4867824114D76003F496B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867724114D76003F496B /* AppDelegate.swift */; };
 		8FE4867A24114D76003F496B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867924114D76003F496B /* SceneDelegate.swift */; };
 		8FE4867C24114D76003F496B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE4867B24114D76003F496B /* ContentView.swift */; };
@@ -45,6 +48,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F063A4F241153910037752C /* AnyLogger in Frameworks */,
+				8F063A55241154CA0037752C /* AlwaysRespectfulApp in Frameworks */,
+				8F063A52241153A20037752C /* AlwaysRespectfully in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +118,11 @@
 			dependencies = (
 			);
 			name = "Full iOS Example";
+			packageProductDependencies = (
+				8F063A4E241153910037752C /* AnyLogger */,
+				8F063A51241153A20037752C /* AlwaysRespectfully */,
+				8F063A54241154CA0037752C /* AlwaysRespectfulApp */,
+			);
 			productName = "Full iOS Example";
 			productReference = 8FE4867424114D76003F496B /* Full iOS Example.app */;
 			productType = "com.apple.product-type.application";
@@ -140,6 +151,11 @@
 				Base,
 			);
 			mainGroup = 8FE4866B24114D76003F496B;
+			packageReferences = (
+				8F063A4D241153910037752C /* XCRemoteSwiftPackageReference "AnyLogger" */,
+				8F063A50241153A20037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfully" */,
+				8F063A53241154CA0037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfulApp" */,
+			);
 			productRefGroup = 8FE4867524114D76003F496B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -370,6 +386,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8F063A4D241153910037752C /* XCRemoteSwiftPackageReference "AnyLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evautherin/AnyLogger.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		8F063A50241153A20037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfully" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evautherin/AlwaysRespectfully.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		8F063A53241154CA0037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfulApp" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evautherin/AlwaysRespectfulApp.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8F063A4E241153910037752C /* AnyLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F063A4D241153910037752C /* XCRemoteSwiftPackageReference "AnyLogger" */;
+			productName = AnyLogger;
+		};
+		8F063A51241153A20037752C /* AlwaysRespectfully */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F063A50241153A20037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfully" */;
+			productName = AlwaysRespectfully;
+		};
+		8F063A54241154CA0037752C /* AlwaysRespectfulApp */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F063A53241154CA0037752C /* XCRemoteSwiftPackageReference "AlwaysRespectfulApp" */;
+			productName = AlwaysRespectfulApp;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8FE4866C24114D76003F496B /* Project object */;
 }

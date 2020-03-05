@@ -12,6 +12,25 @@ import UserNotifications
 import AlwaysRespectfully
 
 
+extension UNNotificationRequest: Identifiable {
+    public var id: String { identifier }
+}
+
+extension UNNotificationRequest: PredicateEquatable {
+    public typealias L = CLLocationCoordinate2D
+
+    public func isEqual<Predicate>(to predicate: Predicate) -> Bool where Predicate: PositionPredicate {
+        guard
+            let region = nativeRegion,
+            let position = region.abstractedPosition
+            else { return false }
+        
+        return position == predicate.position &&
+            region.isEqual(to: predicate.region)
+    }
+}
+
+
 extension PositionPredicate {
     public var nativeRegion: CLRegion {
         let rawRegion = region.native
@@ -102,18 +121,6 @@ extension UNNotificationRequest {
 //    }
 }
 
-
-extension UNNotificationRequest: PredicateEquatable {
-    public func isEqual<Predicate>(to predicate: Predicate) -> Bool where Predicate: PositionPredicate {
-        guard
-            let region = nativeRegion,
-            let position = region.abstractedPosition
-            else { return false }
-        
-        return position == predicate.position &&
-            region.isEqual(to: predicate.region)
-    }
-}
 
 extension NotificationSound {
     public var native: UNNotificationSound {

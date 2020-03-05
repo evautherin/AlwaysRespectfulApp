@@ -9,38 +9,68 @@
 import Combine
 import CoreLocation
 import UserNotifications
+import AlwaysRespectfully
 import AnyLogger
 
 
 public class NotificationDelegate: NSObject {
     public static var shared = NotificationDelegate()
-    static var center: UserNotificationCenter?
-    
+
     var maskedIdentifiers = Set<String>()
     
     private override init() {
         super.init()
-        
-        switch NotificationDelegate.center {
-        case .none: NotificationDelegate.center = UNUserNotificationCenter.current()
-        case .some(_): break
-        }
-        
         startDelegation()
     }
     
     public func startDelegation() {
-//        let center = UNUserNotificationCenter.current()
-        var center = NotificationDelegate.center!
+        let center = UNUserNotificationCenter.current()
         guard center.delegate == nil else { return }
         
         log.debug("> NotificationDelegate startDelegation")
         center.delegate = self
     }
+}
+
+
+extension NotificationDelegate: PositionPredicateStore {
+    public typealias NativePredicate = UNNotificationRequest
+
+    public var storedPredicates: Future<Set<UNNotificationRequest>, Never> {
+        Future({ (promise) in
+            let center = UNUserNotificationCenter.current()
+            center.getPendingNotificationRequests { (requests) in
+                promise(.success(Set(requests)))
+            }
+        })
+    }
     
+    public func add<Predicate>(predicates: [Predicate]) -> AnyPublisher<Void, Error>
+        where Predicate : PositionPredicate {
+            
+        func add(predicate: Predicate) -> Future<Void, Error>? {
+            guard let request = predicate.notificationRequest else { return .none }
     
-    public static func set(center: UserNotificationCenter) {
-        NotificationDelegate.center = center
+            return NotificationDelegate.add(request: request) //.eraseToAnyPublisher()
+        }
+    
+        let publishers = predicates.compactMap(add)
+        return Publishers.zipMany(publishers)
+    }
+    
+    public func remove(predicateIdentifiers: [String]) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: predicateIdentifiers)
+    }
+    
+    public func mask(predicateIdentifiers: [String]) {
+        maskedIdentifiers.formUnion(Set(predicateIdentifiers))
+        let center = UNUserNotificationCenter.current()
+        center.removeDeliveredNotifications(withIdentifiers: predicateIdentifiers)
+    }
+    
+    public func unmask(predicateIdentifiers: [String]) {
+        maskedIdentifiers.subtract(Set(predicateIdentifiers))
     }
 }
 
@@ -76,22 +106,23 @@ extension NotificationDelegate: UNUserNotificationCenterDelegate {
 }
 
 
-extension NotificationDelegate {
-    static func removePendingRequests(withIdentifiers identifiers: [String]) {
-        center!.removePendingNotificationRequests(withIdentifiers: identifiers)
-    }
-    
-    
-    static func removeDeliveredNotifications(withIdentifiers identifiers: [String]) {
-        center!.removeDeliveredNotifications(withIdentifiers: identifiers)
-    }
-}
+//extension NotificationDelegate {
+//    static func removePendingRequests(withIdentifiers identifiers: [String]) {
+//        center.removePendingNotificationRequests(withIdentifiers: identifiers)
+//    }
+//
+//
+//    static func removeDeliveredNotifications(withIdentifiers identifiers: [String]) {
+//        center.removeDeliveredNotifications(withIdentifiers: identifiers)
+//    }
+//}
 
 
 extension NotificationDelegate {
     public static func requestAuthorization(options: UNAuthorizationOptions) -> Future<Bool, Error> {
         Future({ (promise) in
-            center!.requestAuthorization(options: options, completionHandler: { (success, error) in
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: options, completionHandler: { (success, error) in
                 switch error {
                 case .some(let error): promise(.failure(error))
                 case .none: promise(.success((success)))
@@ -103,7 +134,8 @@ extension NotificationDelegate {
     
     public static func add(request: UNNotificationRequest) -> Future<(Void), Error> {
         Future({ (promise) in
-            center!.add(request, withCompletionHandler: { (error) in
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: { (error) in
                 switch error {
                 case .some(let error): promise(.failure(error))
                 case .none: promise(.success(()))
@@ -113,44 +145,28 @@ extension NotificationDelegate {
     }
     
     
-    static var pendingNotificationRequests: Future<[UNNotificationRequest], Never> {
-        Future({ (promise) in
-            center!.getPendingNotificationRequests { (requests) in
-                promise(.success(requests))
-            }
-        })
-    }
+//    static var pendingNotificationRequests: Future<[UNNotificationRequest], Never> {
+//        Future({ (promise) in
+//            center.getPendingNotificationRequests { (requests) in
+//                promise(.success(requests))
+//            }
+//        })
+//    }
 }
 
 
-extension NotificationDelegate {
-    func addMaskedIdentiers(_ identifiers: Set<String>) {
-        log.debug("> add mask for identifiers: \(identifiers.debugDescription)")
-        maskedIdentifiers.formUnion(identifiers)
-        NotificationDelegate.removeDeliveredNotifications(withIdentifiers: Array(identifiers))
-    }
-    
-    
-    func removeMaskedIdentiers(_ identifiers: Set<String>) {
-        log.debug("> remove mask for identifiers: \(identifiers.debugDescription)")
-        maskedIdentifiers.subtract(identifiers)
-    }
-}
+//extension NotificationDelegate {
+//    func addMaskedIdentiers(_ identifiers: Set<String>) {
+//        log.debug("> add mask for identifiers: \(identifiers.debugDescription)")
+//        maskedIdentifiers.formUnion(identifiers)
+//        NotificationDelegate.removeDeliveredNotifications(withIdentifiers: Array(identifiers))
+//    }
+//
+//
+//    func removeMaskedIdentiers(_ identifiers: Set<String>) {
+//        log.debug("> remove mask for identifiers: \(identifiers.debugDescription)")
+//        maskedIdentifiers.subtract(identifiers)
+//    }
+//}
 
 
-public protocol UserNotificationCenter {
-    var delegate: UNUserNotificationCenterDelegate? { get set }
-    
-    func requestAuthorization(
-        options: UNAuthorizationOptions,
-        completionHandler: @escaping (Bool, Error?) -> Void
-    )
-    
-    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
-    func getPendingNotificationRequests(completionHandler: @escaping ([UNNotificationRequest]) -> Void)
-    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
-    func removeDeliveredNotifications(withIdentifiers: [String])
-}
-
-
-extension UNUserNotificationCenter: UserNotificationCenter {}

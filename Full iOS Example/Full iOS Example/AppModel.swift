@@ -72,7 +72,8 @@ class AppModel: ObservableObject {
             .map(GreatService.predicates)
             .reduce([], +)
         
-        AlwaysRespectful.monitor(predicates: Set(predicates))
+        AlwaysRespectfully(regions: LocationDelegate.shared, notifications: NotificationDelegate.shared)
+            .monitor(predicates: Set(predicates))
             .sink(receiveCompletion: { (completion) in
                 switch (completion) {
                 case .finished: os_log("Monitor finished", log: OSLog.default, type: .default)
@@ -89,8 +90,11 @@ class AppModel: ObservableObject {
     
     func requestBestAuthorization(_ locationLaunch: Bool) {
         guard !locationLaunch else { return }
-        
-        AlwaysRespectful.requestBestAuthorization()
+      
+        #warning("requestBestAuthorization")
+        LocationDelegate.shared.requestAlwaysAuthorization()
+        NotificationDelegate.requestAuthorization(options: [.alert, .badge, .sound])
+//        AlwaysRespectful.requestBestAuthorization()
     }
 }
 

@@ -6,6 +6,7 @@
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
 //
 
+import Combine
 import UserNotifications
 import AlwaysRespectfulApp
 import AnyLogger

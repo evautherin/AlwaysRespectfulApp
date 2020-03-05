@@ -20,16 +20,44 @@ extension CLLocationCoordinate2D: Location {
 }
 
 
+extension CLLocationCoordinate2D {
+    func isEqual(to location: Location) -> Bool {
+        latitude == location.latitude && longitude == location.longitude
+    }
+
+}
+
+
+extension CLLocationCoordinate2D: Hashable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude)
+        hasher.combine(longitude)
+    }
+}
+
+
+extension Location {
+    var native: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(
+            latitude: CLLocationDegrees(latitude),
+            longitude: CLLocationDegrees(longitude)
+        )
+    }
+}
+
+
 extension BeaconIdentifier {
     var native: CLBeaconIdentityConstraint {
         switch (major) {
-            
         case .major(let major, let minor):
             switch minor {
             case .minor(let minor): return CLBeaconIdentityConstraint(uuid: uuid, major: major, minor: minor)
             case .any: return CLBeaconIdentityConstraint(uuid: uuid, major: major)
             }
-            
         case .any:
             return CLBeaconIdentityConstraint(uuid: uuid)
         }
@@ -38,16 +66,14 @@ extension BeaconIdentifier {
 
 
 extension CLBeaconIdentityConstraint {
-    var extracted: BeaconIdentifier? {
+    var abstractedIdentifier: BeaconIdentifier? {
         var majorIdentifier: BeaconMajorIdentifier {
             switch major {
-                
             case .some(let major):
                 switch minor {
                 case .some(let minor): return BeaconMajorIdentifier.major(major, BeaconMinorIdentifier.minor(minor))
                 case .none: return BeaconMajorIdentifier.major(major, BeaconMinorIdentifier.any)
                 }
-
             case .none: return BeaconMajorIdentifier.any
             }
         }
@@ -60,90 +86,55 @@ extension CLBeaconIdentityConstraint {
 extension Region {
     public var native: CLRegion {
         switch self {
-            
         case .circle(let center, let radius):
             return CLCircularRegion(
-                center: CLLocationCoordinate2D(
-                    latitude: CLLocationDegrees(center.latitude),
-                    longitude: CLLocationDegrees(center.longitude)),
+                center: center.native,
                 radius: CLLocationDistance(radius),
-                identifier: description
+                identifier: center.description
             )
-            
         case .beaconArea(let beaconIdentifier):
             return CLBeaconRegion(
                 beaconIdentityConstraint: beaconIdentifier.native,
                 identifier: description
             )
         }
-    }
-    
-    public func native(identifier: String) -> CLRegion {
-        switch self {
-            
-        case .circle(let center, let radius):
-            return CLCircularRegion(
-                center: CLLocationCoordinate2D(
-                    latitude: CLLocationDegrees(center.latitude),
-                    longitude: CLLocationDegrees(center.longitude)),
-                radius: CLLocationDistance(radius),
-                identifier: identifier
-            )
-            
-        case .beaconArea(let beaconIdentifier):
-            return CLBeaconRegion(
-                beaconIdentityConstraint: beaconIdentifier.native,
-                identifier: identifier
-            )
-        }
-    }
-    
-    public static func extract(region: CLRegion) -> Region<AnyLocation>? {
-        region.abstractedRegion
     }
 }
 
 
 extension CLRegion {
-    public var abstractedRegion: Region<AnyLocation>? {
+    public var abstractedRegion: Region<CLLocationCoordinate2D>? {
         let circleOptional = self as? CLCircularRegion
         let beaconOptional = self as? CLBeaconRegion
         
         switch (circleOptional, beaconOptional) {
-            
-        case (.some(_), .some(_)):
-            return .none
-            
         case (.some(let circular), .none):
-            let center = circular.center
-            return Region.circle(
-                AnyLocation(
-                    latitude: center.latitude,
-                    longitude: center.longitude
-                ),
-                circular.radius
-            )
-            
+            return Region.circle(circular.center, circular.radius)
         case (.none, .some(let beacon)):
             return beacon.abstractedRegion
-            
-        case (.none, .none):
+        case (.some(_), .some(_)), (.none, .none):
             return .none
         }
     }
 }
 
 
-extension CLRegion {
-    public var abstractedPosition: Position? {
-        switch (notifyOnEntry, notifyOnEntry) {
-        case (false, false): return .none
-        case (false, true): return .outside
-        case (true, false): return .inside
-        case (true, true): return .none
+extension CLRegion: RegionEquatable {
+    public func isEqual<L>(to region: Region<L>) -> Bool where L: Location {
+        guard let abstractedRegion = abstractedRegion else { return false }
+        
+        switch (abstractedRegion, region) {
+        case (.circle(let center, let radius), .circle(let regionCenter, let regionRadius)) :
+            return center.isEqual(to: regionCenter) && radius == regionRadius
+        case (.beaconArea(let identifier), .beaconArea(let regionIdentifier)) :
+            return identifier == regionIdentifier
+        case (.circle(_, _), .beaconArea(_)), (.beaconArea(_), .circle(_, _)) :
+            return false
         }
     }
 }
+
+
 
 
 

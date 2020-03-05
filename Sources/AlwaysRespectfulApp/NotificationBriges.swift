@@ -16,11 +16,9 @@ extension PositionPredicate {
     public var nativeRegion: CLRegion {
         let rawRegion = region.native
         switch position {
-            
         case .inside:
             rawRegion.notifyOnEntry = true
             rawRegion.notifyOnExit = false
-                
         case .outside:
             rawRegion.notifyOnEntry = false
             rawRegion.notifyOnExit = true
@@ -61,14 +59,26 @@ extension PositionPredicate {
 
 
 extension CLRegion {
-    public var abstractedPredicate: AnyPositionPredicate? {
-        guard
-            let region = abstractedRegion,
-            let position = abstractedPosition
-            else { return .none }
-        
-        return AnyPositionPredicate(position, region)
+    public var abstractedPosition: Position? {
+        switch (notifyOnEntry, notifyOnEntry) {
+        case (false, false): return .none
+        case (false, true): return .outside
+        case (true, false): return .inside
+        case (true, true): return .none
+        }
     }
+}
+
+
+extension CLRegion {
+//    public var abstractedPredicate: AnyPositionPredicate? {
+//        guard
+//            let region = abstractedRegion,
+//            let position = abstractedPosition
+//            else { return .none }
+//        
+//        return AnyPositionPredicate(position, region)
+//    }
 }
 
 
@@ -83,15 +93,27 @@ extension UNNotificationRequest {
         return trigger.region
     }
     
-    public var abstractedPredicate: AnyPositionPredicate? {
-        nativeRegion?.abstractedPredicate
-    }
-    
-    public static func abstractPredicate(from request: UNNotificationRequest) -> AnyPositionPredicate? {
-        request.abstractedPredicate
-    }
+//    public var abstractedPredicate: AnyPositionPredicate? {
+//        nativeRegion?.abstractedPredicate
+//    }
+//    
+//    public static func abstractPredicate(from request: UNNotificationRequest) -> AnyPositionPredicate? {
+//        request.abstractedPredicate
+//    }
 }
 
+
+extension UNNotificationRequest: PredicateEquatable {
+    public func isEqual<Predicate>(to predicate: Predicate) -> Bool where Predicate: PositionPredicate {
+        guard
+            let region = nativeRegion,
+            let position = region.abstractedPosition
+            else { return false }
+        
+        return position == predicate.position &&
+            region.isEqual(to: predicate.region)
+    }
+}
 
 extension NotificationSound {
     public var native: UNNotificationSound {

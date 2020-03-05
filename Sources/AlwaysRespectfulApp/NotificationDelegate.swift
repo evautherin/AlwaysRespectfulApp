@@ -1,12 +1,11 @@
 //
 //  NotificationDelegate.swift
-//  AlwaysRespectful
+//  AlwaysRespectfully
 //
 //  Created by Etienne Vautherin on 18/02/2020.
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.
 //
 
-import Foundation
 import Combine
 import CoreLocation
 import UserNotifications

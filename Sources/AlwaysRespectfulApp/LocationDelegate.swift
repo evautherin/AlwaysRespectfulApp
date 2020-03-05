@@ -1,6 +1,6 @@
 //
 //  LocationDelegate.swift
-//  AlwaysRespectful
+//  AlwaysRespectfully
 //
 //  Created by Etienne Vautherin on 03/02/2020.
 //  Copyright © 2020 Etienne Vautherin. All rights reserved.

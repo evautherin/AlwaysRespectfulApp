@@ -24,6 +24,8 @@
 		8FBD957B241103A00032EA4A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8FBD957E241103A00032EA4A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8FBD9580241103A00032EA4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FBD9586241103BF0032EA4A /* AlwaysRespectfulApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AlwaysRespectfulApp; path = ..; sourceTree = "<group>"; };
+		8FBD9587241103D00032EA4A /* AlwaysRespectfully */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AlwaysRespectfully; path = ../../AlwaysRespectfully; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +42,8 @@
 		8FBD95662411039D0032EA4A = {
 			isa = PBXGroup;
 			children = (
+				8FBD9587241103D00032EA4A /* AlwaysRespectfully */,
+				8FBD9586241103BF0032EA4A /* AlwaysRespectfulApp */,
 				8FBD95712411039D0032EA4A /* Full iOS Example */,
 				8FBD95702411039D0032EA4A /* Products */,
 			);

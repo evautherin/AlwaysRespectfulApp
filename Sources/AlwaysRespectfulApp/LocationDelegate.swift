@@ -130,6 +130,7 @@ extension LocationDelegate: CLLocationManagerDelegate {
 extension LocationDelegate {
     
     public func requestAlwaysAuthorization() {
+        startDelegation()
         manager.requestAlwaysAuthorization()
     }
     

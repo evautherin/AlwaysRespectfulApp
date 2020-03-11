@@ -46,10 +46,9 @@ extension LocationDelegate: RegionStore {
 
     public var storedRegions: Set<CLRegion> { Set(manager.monitoredRegions) }
     
-    public func add<Predicate>(regions: [Region<Predicate.L>], _: Predicate.Type) -> AnyPublisher<Void, Error>
-        where Predicate : PositionPredicate {
+    public func add(regions: [Region]) -> AnyPublisher<Void, Error> {
             
-        func add(region: Region<Predicate.L>) -> AnyPublisher<Void, Error> {
+        func add(region: Region) -> AnyPublisher<Void, Error> {
             let nativeRegion = region.native
             return startMonitoring(for: nativeRegion)
         }

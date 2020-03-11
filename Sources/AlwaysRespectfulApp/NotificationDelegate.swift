@@ -45,10 +45,9 @@ extension NotificationDelegate: PositionPredicateStore {
         })
     }
     
-    public func add<Predicate>(predicates: [Predicate]) -> AnyPublisher<Void, Error>
-        where Predicate : PositionPredicate {
+    public func add<P>(predicates: [P]) -> AnyPublisher<Void, Error> where P: PositionPredicate {
             
-        func add(predicate: Predicate) -> Future<Void, Error>? {
+        func add(predicate: P) -> Future<Void, Error>? {
             guard let request = predicate.notificationRequest else { return .none }
             return NotificationDelegate.add(request: request)
         }

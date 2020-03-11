@@ -86,11 +86,11 @@ extension CLBeaconIdentityConstraint {
 extension Region {
     public var native: CLRegion {
         switch self {
-        case .circle(let center, let radius):
+        case .circle(let latitude, let longitude, let radius, _):
             return CLCircularRegion(
-                center: center.native,
+                center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
                 radius: CLLocationDistance(radius),
-                identifier: center.description
+                identifier: self.description
             )
         case .beaconArea(let beaconIdentifier):
             return CLBeaconRegion(
@@ -103,13 +103,18 @@ extension Region {
 
 
 extension CLRegion {
-    public var abstractedRegion: Region<CLLocationCoordinate2D>? {
+    public var abstractedRegion: Region? {
         let circleOptional = self as? CLCircularRegion
         let beaconOptional = self as? CLBeaconRegion
         
         switch (circleOptional, beaconOptional) {
         case (.some(let circular), .none):
-            return Region.circle(circular.center, circular.radius)
+            return Region.circle(
+                circular.center.latitude,
+                circular.center.longitude,
+                circular.radius,
+                .unknown
+            )
         case (.none, .some(let beacon)):
             return beacon.abstractedRegion
         case (.some(_), .some(_)), (.none, .none):
@@ -120,15 +125,18 @@ extension CLRegion {
 
 
 extension CLRegion: RegionEquatable {
-    public func isEqual<L>(to region: Region<L>) -> Bool where L: Location {
+    public func isEqual(to region: Region) -> Bool {
         guard let abstractedRegion = abstractedRegion else { return false }
         
         switch (abstractedRegion, region) {
-        case (.circle(let center, let radius), .circle(let regionCenter, let regionRadius)) :
-            return center.isEqual(to: regionCenter) && radius == regionRadius
+        case (.circle(let latitude, let longitude, let radius, _),
+              .circle(let regionLatitude, let regionLongitude, let regionRadius, _)) :
+            return latitude == regionLatitude &&
+                longitude == regionLongitude &&
+                radius == regionRadius
         case (.beaconArea(let identifier), .beaconArea(let regionIdentifier)) :
             return identifier == regionIdentifier
-        case (.circle(_, _), .beaconArea(_)), (.beaconArea(_), .circle(_, _)) :
+        case (.circle(_, _, _, _), .beaconArea(_)), (.beaconArea(_), .circle(_, _, _, _)) :
             return false
         }
     }

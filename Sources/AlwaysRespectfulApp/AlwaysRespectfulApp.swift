@@ -10,10 +10,11 @@ import Combine
 import AlwaysRespectfully
 
 
-public struct AlwaysRespectfulApp {
-    public static func monitor<Predicate>(
+public struct AlwaysRespectfulApp<Predicate> where Predicate: Hashable, Predicate: PositionPredicate {
+    public static func monitor(
         predicates: Set<Predicate>
-    ) -> AnyPublisher<Predicate, Error> where Predicate: Hashable, Predicate: PositionPredicate {
+    ) -> AnyPublisher<Predicate, Error> {
+        
         AlwaysRespectfully(regions: LocationDelegate.shared, notifications: NotificationDelegate.shared)
             .monitor(predicates: predicates)
     }

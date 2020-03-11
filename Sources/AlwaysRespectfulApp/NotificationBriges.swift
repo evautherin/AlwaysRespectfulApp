@@ -17,9 +17,10 @@ extension UNNotificationRequest: Identifiable {
 }
 
 extension UNNotificationRequest: PredicateEquatable {
-    public typealias L = CLLocationCoordinate2D
+//    public typealias Abstraction = <#type#>
+//    public typealias L = CLLocationCoordinate2D
 
-    public func isEqual<Predicate>(to predicate: Predicate) -> Bool where Predicate: PositionPredicate {
+    public func isEqual<P>(to predicate: P) -> Bool where P: PositionPredicate {
         guard
             let region = nativeRegion,
             let position = region.abstractedPosition
